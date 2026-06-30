@@ -1,4 +1,5 @@
 import requests
+from pprint import pprint
 
 
 class INPIApi:
@@ -13,6 +14,9 @@ class INPIApi:
             "Accept": "application/xml",
             "Content-Type": "application/json"
         })
+
+        self.access_token = None
+        self.refresh_token = None
 
     def build_query(
         self,
@@ -61,7 +65,8 @@ class INPIApi:
     def endpoint(self):
 
         return f"{self.BASE_URL}/marques/search"
-          def headers(self):
+
+    def headers(self):
 
         return {
             "Accept": "application/xml",
@@ -94,8 +99,24 @@ class INPIApi:
 
         print("\nJSON")
 
-        from pprint import pprint
-
         pprint(request["json"])
-        self.access_token = None
-        self.refresh_token = None
+
+    def authenticate(self, username, password):
+
+        url = "https://api-gateway.inpi.fr/auth/login"
+
+        payload = {
+            "username": username,
+            "password": password,
+            "rememberMe": False
+        }
+
+        response = self.session.post(
+            url,
+            json=payload
+        )
+
+        print("Code HTTP :", response.status_code)
+        print(response.text)
+
+        return response
