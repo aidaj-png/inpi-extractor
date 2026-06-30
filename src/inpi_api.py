@@ -103,7 +103,22 @@ class INPIApi:
 
     def authenticate(self, username, password):
 
-        url = "https://api-gateway.inpi.fr/auth/login"
+        # Création de la session et récupération du cookie XSRF
+        login_page = self.session.get("https://api-gateway.inpi.fr/login")
+
+        print("GET /login :", login_page.status_code)
+
+        xsrf = self.session.cookies.get("XSRF-TOKEN")
+
+        if not xsrf:
+            print("Erreur : cookie XSRF introuvable.")
+            return None
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "X-XSRF-TOKEN": xsrf
+        }
 
         payload = {
             "username": username,
@@ -112,11 +127,25 @@ class INPIApi:
         }
 
         response = self.session.post(
-            url,
-            json=payload
+            "https://api-gateway.inpi.fr/auth/login",
+            json=payload,
+            headers=headers
         )
 
-        print("Code HTTP :", response.status_code)
+        print("POST /auth/login :", response.status_code)
         print(response.text)
+
+        if response.status_code == 200:
+
+            tokens = response.json()
+
+            self.access_token = tokens["access_token"]
+            self.refresh_token = tokens["refresh_token"]
+
+            self.session.headers.update({
+                "Authorization": f"Bearer {self.access_token}"
+            })
+
+            print("Authentification réussie.")
 
         return response
