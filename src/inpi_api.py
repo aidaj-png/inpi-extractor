@@ -97,3 +97,5 @@ class INPIApi:
         from pprint import pprint
 
         pprint(request["json"])
+        self.access_token = None
+        self.refresh_token = None
