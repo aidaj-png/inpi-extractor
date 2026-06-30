@@ -61,3 +61,39 @@ class INPIApi:
     def endpoint(self):
 
         return f"{self.BASE_URL}/marques/search"
+          def headers(self):
+
+        return {
+            "Accept": "application/xml",
+            "Content-Type": "application/json"
+        }
+
+    def prepare_request(self, word, position=0, size=100):
+
+        return {
+            "url": self.endpoint(),
+            "headers": self.headers(),
+            "json": self.build_query(
+                word=word,
+                position=position,
+                size=size
+            )
+        }
+
+    def print_request(self, word):
+
+        request = self.prepare_request(word)
+
+        print("\nURL")
+        print(request["url"])
+
+        print("\nHEADERS")
+
+        for key, value in request["headers"].items():
+            print(f"{key}: {value}")
+
+        print("\nJSON")
+
+        from pprint import pprint
+
+        pprint(request["json"])
