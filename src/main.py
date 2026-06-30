@@ -1,16 +1,20 @@
-"""
-INPI Extractor
-Version 0.1
+from config import SEARCH_TERM
+from inpi_api import INPIApi
 
-Point d'entrée de l'application.
-"""
 
 def main():
+
     print("=" * 50)
     print("INPI EXTRACTOR")
     print("=" * 50)
-    print("Le projet est correctement installé.")
-    print("La prochaine étape sera la connexion à l'API INPI.")
+
+    print(f"Recherche : {SEARCH_TERM}")
+
+    api = INPIApi()
+
+    api.test()
+
+    print("\nProjet initialisé avec succès.")
 
 
 if __name__ == "__main__":
